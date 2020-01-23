@@ -1,8 +1,8 @@
 /**
  * Created by petr on 22.01.20.
  */
-#ifndef CLION_SVATAVA_NUMBERBUFFER_H
-#define CLION_SVATAVA_NUMBERBUFFER_H
+#ifndef CLION_SVATAVA_NUMBER_BUFFER_H
+#define CLION_SVATAVA_NUMBER_BUFFER_H
 
 #include "constants.h"
 

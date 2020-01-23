@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "zasobnik.h"
 #include "logger.h"
-#include "NumberBuffer.h"
+#include "number_buffer.h"
 
 int main() {
     setLogLevel(INFO);

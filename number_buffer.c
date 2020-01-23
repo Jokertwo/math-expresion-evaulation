@@ -2,7 +2,7 @@
 // Created by petr on 22.01.20.
 //
 
-#include "NumberBuffer.h"
+#include "number_buffer.h"
 #include "logger.h"
 #include <stdlib.h>
 #include <string.h>
