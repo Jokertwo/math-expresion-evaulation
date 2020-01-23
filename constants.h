@@ -14,12 +14,17 @@ typedef enum {
     right_parenthesis_t,
     operator_t,
     error_t
-}TYPE;
+} TYPE;
 
-typedef struct token{
+typedef struct token {
     TYPE type;
     double number;
-    char operator;
+    char *operator;
 } TOKEN;
+
+typedef struct node_b {
+    char item;
+    struct node_b *next;
+} NODE;
 
 #endif

@@ -3,17 +3,22 @@
 #include "zasobnik.h"
 #include "logger.h"
 #include "number_buffer.h"
+#include "letter_buffer.h"
+
+static TOKEN *createToken();
+
+static void releaseToken(TOKEN **token);
 
 int main() {
-    setLogLevel(INFO);
+    setLogLevel(DEBUG);
     logInfo("Starting app");
 
     logInfo("Start testing stack");
     logInfo("Add %d to stack", 5);
     push(5);
-    logInfo("Add %d to stack",10);
+    logInfo("Add %d to stack", 10);
     push(10);
-    logInfo("Add %d to stack",100);
+    logInfo("Add %d to stack", 100);
     push(100);
 
     while (isEmpty() != S_TRUE){
@@ -29,7 +34,7 @@ int main() {
     add_number('5');
 
 
-    TOKEN *token = (TOKEN *) malloc(sizeof(TOKEN));
+    TOKEN *token = createToken();
     if (token == NULL) {
         logError("Unable memory for token");
         exit(-1);
@@ -39,9 +44,72 @@ int main() {
         exit(-2);
     }
     logInfo("%f", token->number);
-    free(token);
+    releaseToken(&token);
+
+    logInfo("Start testing number buffer");
+    add_number('-');
+    add_number('1');
+    add_number('.');
+    add_number('5');
+
+
+    token = createToken();
+    if (token == NULL) {
+        logError("Unable memory for token");
+        exit(-1);
+    }
+    if (get_number(token) != S_TRUE) {
+        logWarn("Some error during creating token number");
+        exit(-2);
+    }
+    logInfo("%f", token->number);
+    releaseToken(&token);
+
+    add_letter('5');
+    add_letter('a');
+    add_letter('g');
+
+    token = createToken();
+    if (token == NULL) {
+        logError("Unable memory for token");
+        exit(-1);
+    }
+    if (get_letter(token) != S_TRUE) {
+        logWarn("Some error during creating token number");
+        exit(-2);
+    }
+    logInfo("%s", token->operator);
+    releaseToken(&token);
+
+    add_letter('6');
+    add_letter('4');
+    add_letter('g');
+
+    token = createToken();
+    if (token == NULL) {
+        logError("Unable memory for token");
+        exit(-1);
+    }
+    if (get_letter(token) != S_TRUE) {
+        logWarn("Some error during creating token number");
+        exit(-2);
+    }
+    logInfo("%s", token->operator);
+    releaseToken(&token);
+
 
     logInfo("Exiting app");
 
     return 0;
+}
+
+static TOKEN *createToken() {
+    TOKEN *token = (TOKEN *) malloc(sizeof(TOKEN));
+    token->operator = NULL;
+    return token;
+}
+
+static void releaseToken(TOKEN **token) {
+    free((*token)->operator);
+    free(*token);
 }

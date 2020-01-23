@@ -5,6 +5,7 @@
 #define CLION_SVATAVA_NUMBER_BUFFER_H
 
 #include "constants.h"
+#include "buffer.h"
 
 /**
  * Add new number to buffer
