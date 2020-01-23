@@ -1,1 +1,0 @@
-/usr/bin/cc -g   CMakeFiles/Clion_svatava.dir/main.c.o CMakeFiles/Clion_svatava.dir/zasobnik.c.o CMakeFiles/Clion_svatava.dir/logger.c.o CMakeFiles/Clion_svatava.dir/NumberBuffer.c.o  -o Clion_svatava 
