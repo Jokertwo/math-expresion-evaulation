@@ -1,6 +1,6 @@
 
 #include <stdlib.h>
-#include "zasobnik.h"
+#include "stack.h"
 #include "logger.h"
 #include "number_buffer.h"
 #include "letter_buffer.h"

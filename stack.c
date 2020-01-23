@@ -1,7 +1,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "zasobnik.h"
+#include "stack.h"
 #include "logger.h"
 
 const int S_TRUE = 0;
