@@ -8,12 +8,12 @@ const int S_FALSE;
 
 
 typedef enum {
-    number,
-    variable,
-    left_parenthesis,
-    right_parenthesis,
-    operator,
-    error
+    number_t,
+    variable_t,
+    left_parenthesis_t,
+    right_parenthesis_t,
+    operator_t,
+    error_t
 }TYPE;
 
 typedef struct token{

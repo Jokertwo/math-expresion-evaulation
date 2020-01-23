@@ -4,7 +4,6 @@
 
 #include "NumberBuffer.h"
 #include "logger.h"
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "constants.h"
@@ -57,7 +56,7 @@ int add_number(char number) {
 }
 
 
-TOKEN get_number() {
+int get_number(TOKEN *token) {
     // compute items in buffer
     int size = getSize();
 
@@ -90,9 +89,11 @@ TOKEN get_number() {
         return S_FALSE;
     }
     // release allocated resources
+    token->operator = number_t;
+    token->number = d1;
     free(number);
     clear_buffer();
-    return d1;
+    return S_TRUE;
 }
 
 

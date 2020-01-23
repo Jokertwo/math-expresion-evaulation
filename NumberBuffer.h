@@ -15,9 +15,9 @@ int add_number(char number);
 
 /**
  * number from all items which is stored in buffer
- * @param token
- * @return S_TRUE if all was ok, else S_FALSE if something fail and message is stored in token
+ * @param token where will be stored created number
+ * @return S_TRUE if all was ok, else S_FALSE if something fail
  */
-int get_number(TOKEN **token);
+int get_number(TOKEN *token);
 
 #endif

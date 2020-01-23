@@ -1,4 +1,5 @@
-#include <stdio.h>
+
+#include <stdlib.h>
 #include "zasobnik.h"
 #include "logger.h"
 #include "NumberBuffer.h"
@@ -8,7 +9,7 @@ int main() {
     logInfo("Starting app");
 
     logInfo("Start testing stack");
-    logInfo("Add %d to stack",5);
+    logInfo("Add %d to stack", 5);
     push(5);
     logInfo("Add %d to stack",10);
     push(10);
@@ -17,7 +18,7 @@ int main() {
 
     while (isEmpty() != S_TRUE){
         int data = pop();
-        logInfo("Pop %d from stack.\n",data);
+        logInfo("Pop %d from stack.\n", data);
     }
     logInfo("Stack is empty");
 
@@ -27,9 +28,18 @@ int main() {
     add_number('.');
     add_number('5');
 
-    double b = 1e2;
-    double a = 1 + get_number();
-    logInfo("%f",a);
+
+    TOKEN *token = (TOKEN *) malloc(sizeof(TOKEN));
+    if (token == NULL) {
+        logError("Unable memory for token");
+        exit(-1);
+    }
+    if (get_number(token) != S_TRUE) {
+        logWarn("Some error during creating token number");
+        exit(-2);
+    }
+    logInfo("%f", token->number);
+    free(token);
 
     logInfo("Exiting app");
 
