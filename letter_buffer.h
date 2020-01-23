@@ -22,4 +22,11 @@ int add_letter(char letter);
  */
 int get_letter(TOKEN *token);
 
-#endif /*CLION_SVATAVA_LETTER_BUFFER_H*/
+
+/**
+ * return S_TRUE if is buffer empty, else S_FALSE
+ * @return
+ */
+int is_letter_buff_empty();
+
+#endif

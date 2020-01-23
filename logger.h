@@ -55,4 +55,4 @@ void logError(const char *message, ...);
  */
 int setLogLevel(int severity);
 
-#endif /*CLION_SVATAVA_LOGGER_H*/
+#endif

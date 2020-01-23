@@ -1,9 +1,11 @@
 
 #include <stdlib.h>
+#include <string.h>
 #include "stack.h"
 #include "logger.h"
 #include "number_buffer.h"
 #include "letter_buffer.h"
+#include "tokenizer.h"
 
 static TOKEN *createToken();
 
@@ -51,9 +53,13 @@ void testNumberBuffer() {
         logError("Unable memory for token");
         exit(-1);
     }
-    if (get_number(token) != S_TRUE) {
+    if (!get_number(token)) {
         logWarn("Some error during creating token number");
         exit(-2);
+    }
+    if (!is_number_buff_empty()) {
+        logError("Number buffer is not empty but should be!");
+        exit(-4);
     }
     logInfo("%f", token->number);
     releaseToken(&token);
@@ -70,10 +76,15 @@ void testNumberBuffer() {
         logError("Unable memory for token");
         exit(-1);
     }
-    if (get_number(token) != S_TRUE) {
-        logWarn("Some error during creating token number");
+    if (!get_number(token)) {
+        logError("Some error during creating token number");
         exit(-2);
     }
+    if (!is_number_buff_empty()) {
+        logError("Number buffer is not empty but should be!");
+        exit(-4);
+    }
+
     logInfo("%f", token->number);
     releaseToken(&token);
 
@@ -92,9 +103,14 @@ void testLetterBuffer() {
         logError("Unable memory for token");
         exit(-1);
     }
-    if (get_letter(token) != S_TRUE) {
-        logWarn("Some error during creating token number");
+    if (!get_letter(token)) {
+        logError("Some error during creating token numbertoken");
         exit(-2);
+    }
+
+    if (!is_letter_buff_empty()) {
+        logError("Letter buffer is not empty but should be!");
+        exit(-3);
     }
     logInfo("%s", token->operator);
     releaseToken(&token);
@@ -108,24 +124,44 @@ void testLetterBuffer() {
         logError("Unable memory for token");
         exit(-1);
     }
-    if (get_letter(token) != S_TRUE) {
+    if (!get_letter(token)) {
         logWarn("Some error during creating token number");
         exit(-2);
     }
+    if (!is_letter_buff_empty()) {
+        logError("Letter buffer is not empty but should be!");
+        exit(-3);
+    }
+
     logInfo("%s", token->operator);
     releaseToken(&token);
 
     logInfo(" ------ Stop testing letter buffer ------ ");
 }
 
-int main() {
+void testTokenize() {
+    char *expresion = "5E5 + 46545 * 54/55648";
+    tokenize_expresion(expresion);
+    print_tokens();
+    clear();
+}
+
+int main(int argc, char *argv[]) {
     setLogLevel(DEBUG);
     logInfo("Starting app");
 
+    logInfo("%s", argv[1]);
+    logInfo("%d", strlen(argv[1]));
 
-    testStack();
-    testLetterBuffer();
-    testNumberBuffer();
+    size_t len = strlen(argv[1]);
+    int i;
+    for (i = 0; i < len; i++) {
+        //  logInfo("%c",argv[1][i]);
+    }
+    //testStack();
+    //testLetterBuffer();
+    //testNumberBuffer();
+    testTokenize();
 
 
     logInfo("Exiting app");

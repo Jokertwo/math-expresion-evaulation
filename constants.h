@@ -27,4 +27,9 @@ typedef struct node_b {
     struct node_b *next;
 } NODE;
 
+typedef struct token_list {
+    TOKEN *value;
+    struct token_list *next;
+} TOKEN_LIST;
+
 #endif

@@ -21,4 +21,10 @@ int add_number(char number);
  */
 int get_number(TOKEN *token);
 
+/**
+ * return S_TRUE if is buffer empty, else S_FALSE
+ * @return
+ */
+int is_number_buff_empty();
+
 #endif

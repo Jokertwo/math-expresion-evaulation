@@ -4,8 +4,8 @@
 #include "stack.h"
 #include "logger.h"
 
-const int S_TRUE = 0;
-const int S_FALSE = 1;
+const int S_TRUE = 1;
+const int S_FALSE = 0;
 
 typedef struct node {
     int val;

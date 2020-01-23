@@ -30,3 +30,8 @@ int get_letter(TOKEN *token) {
     return S_TRUE;
 
 }
+
+
+int is_letter_buff_empty() {
+    return head_buf == NULL ? S_TRUE : S_FALSE;
+}

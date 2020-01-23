@@ -36,4 +36,4 @@ void clear_buffer(NODE **head);
  */
 int getSize(NODE *head);
 
-#endif //CLION_SVATAVA_BUFFER_H
+#endif

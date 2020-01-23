@@ -161,7 +161,7 @@ static int count_size(const char *ptr) {
 }
 
 static int print_new_line(const char *format) {
-    if (is_new_line(format)) {
+    if (!is_new_line(format)) {
         printf("\n");
     }
 }

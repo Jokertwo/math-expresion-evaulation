@@ -51,3 +51,8 @@ int get_number(TOKEN *token) {
 }
 
 
+int is_number_buff_empty() {
+    return head_buf == NULL ? S_TRUE : S_FALSE;
+}
+
+
