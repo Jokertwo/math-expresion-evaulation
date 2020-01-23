@@ -1,0 +1,3 @@
+/home/petr/CLionProjects/Clion-svatava/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/petr/CLionProjects/Clion-svatava/cmake-build-debug/CMakeFiles/Clion_svatava.dir
+/home/petr/CLionProjects/Clion-svatava/cmake-build-debug/CMakeFiles/edit_cache.dir
