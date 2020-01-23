@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
+const int TRACE = 5;
 const int DEBUG = 10;
 const int INFO = 20;
 const int WARN = 30;
@@ -27,9 +28,24 @@ static int print_new_line(const char *format);
 static char *createMessage(const char *severity, const char *message);
 
 
+void logTrace(const char *message, ...) {
+    if (SEVERITY <= TRACE && message != NULL) {
+        char *formatted = createMessage("TRACE: ", message);
+        va_list args;
+
+        va_start (args, message);
+        vprintf(formatted, args);
+        va_end (args);
+
+        print_new_line(formatted);
+        free(formatted);
+    }
+}
+
+
 void logDebug(const char *message, ...) {
     if (SEVERITY <= DEBUG && message != NULL) {
-        char * formatted = createMessage("DEBUG: ", message);
+        char *formatted = createMessage("DEBUG: ", message);
         va_list args;
 
         va_start (args, message);
@@ -44,7 +60,7 @@ void logDebug(const char *message, ...) {
 
 void logInfo(const char *message, ...) {
     if (SEVERITY <= INFO && message != NULL) {
-        char * formatted = createMessage("INFO:  ", message);
+        char *formatted = createMessage("INFO:  ", message);
         va_list args;
         va_start (args, message);
         vprintf(formatted, args);
@@ -57,7 +73,7 @@ void logInfo(const char *message, ...) {
 
 void logWarn(const char *message, ...) {
     if (SEVERITY <= WARN && message != NULL) {
-        char * formatted = createMessage("WARN:  ", message);
+        char *formatted = createMessage("WARN:  ", message);
         va_list args;
         va_start (args, message);
         vprintf(formatted, args);
@@ -69,7 +85,7 @@ void logWarn(const char *message, ...) {
 
 void logError(const char *message, ...) {
     if (SEVERITY <= ERROR && message != NULL) {
-        char * formatted = createMessage("ERROR: ", message);
+        char *formatted = createMessage("ERROR: ", message);
         va_list args;
         va_start (args, message);
         vprintf(formatted, args);
@@ -81,7 +97,7 @@ void logError(const char *message, ...) {
 
 
 int setLogLevel(int severity) {
-    if (severity >= DEBUG && severity <= OFF) {
+    if (severity >= TRACE && severity <= OFF) {
         char *oldValue = get_severity_name(SEVERITY);
         char *newValue = get_severity_name(severity);
         char str[80];
@@ -110,6 +126,8 @@ static char *get_severity_name(int severity) {
         strcpy(name, "ERROR");
     } else if (severity == OFF) {
         strcpy(name, "OFF");
+    } else if (severity == TRACE) {
+        strcpy(name, "TRACE");
     } else {
         strcpy(name, "UNKNOWN");
     }
