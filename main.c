@@ -9,11 +9,8 @@ static TOKEN *createToken();
 
 static void releaseToken(TOKEN **token);
 
-int main() {
-    setLogLevel(DEBUG);
-    logInfo("Starting app");
-
-    logInfo("Start testing stack");
+void testStack() {
+    logInfo(" ------ Start testing stack ------ ");
     logInfo("Add %d to stack", 5);
     push(5);
     logInfo("Add %d to stack", 10);
@@ -21,13 +18,28 @@ int main() {
     logInfo("Add %d to stack", 100);
     push(100);
 
-    while (isEmpty() != S_TRUE){
+    while (isEmpty() != S_TRUE) {
         int data = pop();
         logInfo("Pop %d from stack.\n", data);
     }
-    logInfo("Stack is empty");
 
-    logInfo("Start testing number buffer");
+    logInfo("Add %d to stack", 5);
+    push(500);
+    logInfo("Add %d to stack", 10);
+    push(1110);
+    logInfo("Add %d to stack", 100);
+    push(-100);
+
+    while (isEmpty() != S_TRUE) {
+        int data = pop();
+        logInfo("Pop %d from stack.\n", data);
+    }
+
+    logInfo(" ------ Finish testing stack ------ ");
+}
+
+void testNumberBuffer() {
+    logInfo(" ------ Start testing number buffer ------ ");
     add_number('-');
     add_number('1');
     add_number('.');
@@ -46,7 +58,7 @@ int main() {
     logInfo("%f", token->number);
     releaseToken(&token);
 
-    logInfo("Start testing number buffer");
+
     add_number('-');
     add_number('1');
     add_number('.');
@@ -65,11 +77,17 @@ int main() {
     logInfo("%f", token->number);
     releaseToken(&token);
 
+    logInfo(" ------ Finish testing number buffer ------ ");
+}
+
+void testLetterBuffer() {
+    logInfo(" ------ Start testing letter buffer ------ ");
+
     add_letter('5');
     add_letter('a');
     add_letter('g');
 
-    token = createToken();
+    TOKEN *token = createToken();
     if (token == NULL) {
         logError("Unable memory for token");
         exit(-1);
@@ -96,6 +114,18 @@ int main() {
     }
     logInfo("%s", token->operator);
     releaseToken(&token);
+
+    logInfo(" ------ Stop testing letter buffer ------ ");
+}
+
+int main() {
+    setLogLevel(DEBUG);
+    logInfo("Starting app");
+
+
+    testStack();
+    testLetterBuffer();
+    testNumberBuffer();
 
 
     logInfo("Exiting app");
