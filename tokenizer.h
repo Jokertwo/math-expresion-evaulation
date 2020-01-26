@@ -10,16 +10,7 @@
  * @param expresion math expresion
  * @return return S_TRUE if everything was ok else S_FALSE
  */
-int tokenize_expresion(char *expresion);
+int tokenize_expresion(char *expresion, TOKEN_LIST **head);
 
-/**
- * Print created tokens
- */
-void print_tokens();
-
-/**
- * Clear created tokens
- */
-void clear();
 
 #endif

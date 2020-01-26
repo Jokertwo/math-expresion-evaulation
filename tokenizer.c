@@ -8,36 +8,29 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include "token_list.h"
 
-static TOKEN_LIST *head_list;
-
-/**
- * Add token to token list
- * @param token token which should be added
- * @return return S_TRUE if everything was ok, else some error code
- */
-static int add_token(TOKEN *token);
 
 /**
  * Create number from content of number_buffer
  *
  * @return
  */
-static int create_number();
+static int create_number(TOKEN_LIST **head);
 
 /**
  * Create string form content of letter_buffer
  *
  * @return
  */
-static int create_string();
+static int create_string(TOKEN_LIST **head);
 
 /**
  * Create new function token and store it in list
  * @param operator function which should be stored
  * @return return S_TRUE if function was successfully created and stored, else UNKNOWN_OPERATOR if cannot be resolved or OUT_OF_MEMORY when can not be created new token
  */
-static int create_operator(char operator);
+static int create_operator(char operator, TOKEN_LIST **head);
 
 /**
  * Resolve type of function
@@ -47,7 +40,7 @@ static int create_operator(char operator);
  */
 static int resolve_operator(char operator, TOKEN **token);
 
-int tokenize_expresion(char *expresion) {
+int tokenize_expresion(char *expresion, TOKEN_LIST **head) {
     int i, checkResult;
     size_t len;
     logInfo("Start tokenize expresion: %s", expresion);
@@ -66,7 +59,7 @@ int tokenize_expresion(char *expresion) {
 
             /**  pokud jsem do ted cetl pismena vztvorim z nich jedno slovo */
             if (!is_letter_buff_empty()) {
-                checkResult = create_string();
+                checkResult = create_string(head);
             }
             /** pokud jsem do ted cetl cisla*/
             if (!is_number_buff_empty()) {
@@ -82,12 +75,12 @@ int tokenize_expresion(char *expresion) {
                     continue;
                 } else {
                     /** ve vsech ostatnich pripadech vytvor cislo z toho co je v bufferu*/
-                    checkResult = create_number();
+                    checkResult = create_number(head);
                 }
             }
             /** nakonec je treba zpracovat aktulni znak, mezery se neukladaji protoze je az ted k nicemu nepotrebuju*/
             if (!isspace(item)) {
-                checkResult = create_operator(item);
+                checkResult = create_operator(item, head);
             }
             /** pokud je znak cislo nebo desetina tecka pridej to do ciselneho bufferu*/
         } else if (isdigit(item) || item == '.') {
@@ -111,72 +104,19 @@ int tokenize_expresion(char *expresion) {
     }
 
     if (!is_number_buff_empty()) {
-        checkResult = create_number();
+        checkResult = create_number(head);
     }
     if (checkResult != S_TRUE) return checkResult;
 
     if (!is_letter_buff_empty()) {
-        checkResult = create_string();
+        checkResult = create_string(head);
     }
 
     return checkResult;
 }
 
 
-void print_tokens() {
-    TOKEN_LIST *temp = head_list;
-    while (temp != NULL) {
-        if (temp->value->type == number_t) {
-            logInfo("Token type: number, value: %f", temp->value->number);
-        } else if (temp->value->type == function_t) {
-            logInfo("Token type: function, value: %s", temp->value->function);
-        } else if (temp->value->type == variable_t) {
-            logInfo("Token type: variable, value: %c", temp->value->other);
-        } else {
-            logInfo("Token type: operator, value: %c", temp->value->other);
-        }
-        temp = temp->next;
-    }
-}
-
-void clear() {
-
-    while (head_list != NULL) {
-        TOKEN_LIST *temp = head_list->next;
-        free(head_list->value->function);
-        free(head_list->value);
-        free(head_list);
-        head_list = temp;
-    }
-}
-
-
-static int add_token(TOKEN *token) {
-    TOKEN_LIST *temp, *newNode;
-    newNode = (TOKEN_LIST *) malloc((sizeof(TOKEN_LIST)));
-    if (newNode == NULL) {
-        logError("Unable to allocate memory for new TOKEN_LIST node");
-        return OUT_OF_MEMORY;
-    }
-
-    newNode->value = token;
-    newNode->next = NULL;
-
-    if (head_list == NULL) {
-        head_list = newNode;
-        return S_TRUE;
-    }
-    temp = head_list;
-    while (temp->next != NULL) {
-        temp = temp->next;
-    }
-    temp->next = newNode;
-    logDebug("New token added to token list");
-    return S_TRUE;
-
-}
-
-static int create_number() {
+static int create_number(TOKEN_LIST **head) {
     int result;
     TOKEN *token;
     token = (TOKEN *) malloc(sizeof(TOKEN));
@@ -189,10 +129,10 @@ static int create_number() {
     if (result != S_TRUE) {
         return result;
     }
-    return add_token(token);
+    return add_to_end(token, head);
 }
 
-static int create_string() {
+static int create_string(TOKEN_LIST **head) {
     int result;
     TOKEN *token;
     token = (TOKEN *) malloc(sizeof(TOKEN));
@@ -208,10 +148,10 @@ static int create_string() {
         logError("Can not create new token from string");
         return result;
     }
-    return add_token(token);
+    return add_to_end(token, head);
 }
 
-static int create_operator(char operator) {
+static int create_operator(char operator, TOKEN_LIST **head) {
     int returnValue;
     TOKEN *token;
     token = (TOKEN *) malloc(sizeof(TOKEN));
@@ -234,7 +174,7 @@ static int create_operator(char operator) {
     logInfo("Created new token, type: %d, other: %c", token->type, token->other);
 
     /*adding token to token list*/
-    return add_token(token);
+    return add_to_end(token, head);
 }
 
 static int resolve_operator(char operator, TOKEN **token) {

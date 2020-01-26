@@ -6,6 +6,7 @@
 #include "number_buffer.h"
 #include "letter_buffer.h"
 #include "tokenizer.h"
+#include "token_list.h"
 
 static TOKEN *createToken();
 
@@ -160,11 +161,12 @@ void testLetterBuffer() {
 
 void testTokenize() {
     char *expresion;
+    TOKEN_LIST *head = NULL;
     logInfo(" ------ Start testing tokenizer ------ ");
     expresion = " 0x12          +((2*cos(x^2)/5)+5) * sin(x^(tan(x + 5E5)))   88 9 +";
-    tokenize_expresion(expresion);
-    print_tokens();
-    clear();
+    tokenize_expresion(expresion, &head);
+    print_tokens(head);
+    clear(&head);
     logInfo(" ------ End testing tokenizer ------ ");
 }
 
