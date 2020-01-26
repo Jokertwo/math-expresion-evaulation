@@ -140,7 +140,7 @@ void testLetterBuffer() {
 }
 
 void testTokenize() {
-    char *expresion = "5E5 + 46545 * 54/55648";
+    char *expresion = " 5e3+((2*cos(x^2)/5)+5) * sin(x^(tan(x + 5E5)))";
     tokenize_expresion(expresion);
     print_tokens();
     clear();

@@ -31,59 +31,43 @@ int tokenize_expresion(char *expresion) {
 
     for (i = 0; i < len; i++) {
         char item = expresion[i];
-
+        TOKEN *token;
         //skip space
         if (isspace(item)) {
-            //lastItem = item;
             continue;
         }
 
-        if (isdigit(item) || item == '.') {
-            TOKEN *token;
-            switch (status) {
-                case NUMBER_STATE:
-                    add_number(item);
-                    break;
-
-                case LETTER_STATE:
-                    token = create_token();
-                    get_letter(token);
-                    add_token(token);
-
-                    status = NUMBER_STATE;
-                    add_number(item);
-                    break;
-                default:
-                    logError("Nevim co by tu ted melo byt");
+        if (item == '(' || item == ')' || item == '*' || item == '+' || item == '/' || item == '^') {
+            if (!is_letter_buff_empty()) {
+                token = create_token();
+                get_letter(token);
+                add_token(token);
             }
-        } else {
-            TOKEN *token;
-            switch (status) {
-                case NUMBER_STATE:
-                    if (item == 'e' || item == 'E') {
-                        add_number(item);
-                    } else if (item == '-' && ('e' == lastItem || 'E' == lastItem)) {
-                        add_number(item);
-                    } else {
-                        token = create_token();
-                        get_number(token);
-                        add_token(token);
+            if (!is_number_buff_empty()) {
+                token = create_token();
+                get_number(token);
+                add_token(token);
+            }
 
-                        status = LETTER_STATE;
-                        add_letter(item);
-                    }
-                    break;
-                case LETTER_STATE:
-                    if (item == '+' || item == '*' || item == '/' || item == '^') {
-                        token = create_token();
-                        get_letter(token);
-                        add_token(token);
+            token = create_token();
+            token->type = operator_t;
+            token->operator = (char *) malloc(sizeof(char) * 4);
+            if (token->operator == NULL) {
+                logError("Unable to allocate memory for new operator");
+                return S_FALSE;
+            }
 
-                        add_letter(item);
-                    }
-                    break;
-                default:
-                    logError("Nevim co by tu ted melo byt");
+            strcpy(token->operator, &item);
+            token->operator[1] = '\0';
+
+            add_token(token);
+        } else if (isdigit(item) || item == '.') {
+            add_number(item);
+        } else if (isalpha(item)) {
+            if (!is_number_buff_empty()) {
+                add_number(item);
+            } else {
+                add_letter(item);
             }
         }
         lastItem = item;
@@ -93,7 +77,8 @@ int tokenize_expresion(char *expresion) {
         token = create_token();
         get_letter(token);
         add_token(token);
-    } else {
+    }
+    if (!is_letter_buff_empty()) {
         token = create_token();
         get_number(token);
         add_token(token);
