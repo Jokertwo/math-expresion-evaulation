@@ -19,12 +19,18 @@ int add_letter(char letter) {
 int get_letter(TOKEN *token) {
     char *expresion;
 
-    if (concat(&expresion, &head_buf) == S_FALSE) {
-        logError("Cannot concat letter to word!!!");
-        return S_FALSE;
+    int result = concat(&expresion, &head_buf);
+    if (result != S_TRUE) {
+        return result;
     }
-    token->type = operator_t;
-    token->operator = expresion;
+    if (strcmp(expresion, "x") == 0) {
+        token->type = variable_t;
+        free(expresion);
+        token->other = 'x';
+    } else {
+        token->type = function_t;
+        token->function = expresion;
+    }
 
     clear_buffer(&head_buf);
     return S_TRUE;

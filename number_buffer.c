@@ -23,12 +23,13 @@ int get_number(TOKEN *token) {
     char *number = NULL;
     if (head_buf == NULL) {
         logError("Number buffer is empty!");
-        return S_FALSE;
+        return OUT_OF_MEMORY;
     }
 
-    if (concat(&number, &head_buf) == S_FALSE) {
+    int result = concat(&number, &head_buf);
+    if (result != S_TRUE) {
         logError("Cannot concat number buffer!!!");
-        return S_FALSE;
+        return result;
     }
 
 
@@ -42,7 +43,7 @@ int get_number(TOKEN *token) {
         return S_FALSE;
     }
     // release allocated resources
-    token->operator = NULL;
+    token->function = NULL;
     token->number = d1;
     token->type = number_t;
     free(number);

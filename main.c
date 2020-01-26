@@ -112,7 +112,7 @@ void testLetterBuffer() {
         logError("Letter buffer is not empty but should be!");
         exit(-3);
     }
-    logInfo("%s", token->operator);
+    logInfo("%s", token->function);
     releaseToken(&token);
 
     add_letter('6');
@@ -133,29 +133,30 @@ void testLetterBuffer() {
         exit(-3);
     }
 
-    logInfo("%s", token->operator);
+    logInfo("%s", token->function);
     releaseToken(&token);
 
     logInfo(" ------ Stop testing letter buffer ------ ");
 }
 
 void testTokenize() {
+    logInfo(" ------ Start testing tokenizer ------ ");
     char *expresion = " 0x12          +((2*cos(x^2)/5)+5) * sin(x^(tan(x + 5E5)))   88 9 +";
     tokenize_expresion(expresion);
     print_tokens();
     clear();
+    logInfo(" ------ End testing tokenizer ------ ");
 }
 
 int main(int argc, char *argv[]) {
     setLogLevel(DEBUG);
     logInfo("Starting app");
 
-    //testStack();
-    //testLetterBuffer();
-    //testNumberBuffer();
+    testStack();
+    testLetterBuffer();
+    testNumberBuffer();
     testTokenize();
-    int a = 0x12;
-    logInfo("%d", a);
+
 
     logInfo("Exiting app");
 
@@ -164,11 +165,11 @@ int main(int argc, char *argv[]) {
 
 static TOKEN *createToken() {
     TOKEN *token = (TOKEN *) malloc(sizeof(TOKEN));
-    token->operator = NULL;
+    token->function = NULL;
     return token;
 }
 
 static void releaseToken(TOKEN **token) {
-    free((*token)->operator);
+    free((*token)->function);
     free(*token);
 }

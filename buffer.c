@@ -53,7 +53,7 @@ int concat(char **result, NODE **head) {
     // check if allocation was not successfully done
     if (tempResult == NULL) {
         logError("Cannot allocate buffer for creating number!!!");
-        return S_FALSE;
+        return OUT_OF_MEMORY;
     }
 
     // iterate throw buffer and concat all items into one string
