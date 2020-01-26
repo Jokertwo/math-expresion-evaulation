@@ -22,7 +22,7 @@ typedef enum {
     minus_op,
     pow_op,
     divide_op,
-    multi_op,
+    multi_op
 } TYPE;
 
 typedef struct token {

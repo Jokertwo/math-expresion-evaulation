@@ -1,6 +1,6 @@
-//
-// Created by petr on 23.01.20.
-//
+/**
+ * Created by petr on 23.01.20.
+ */
 
 #include "buffer.h"
 #include "logger.h"
@@ -8,27 +8,27 @@
 
 
 int add_item(char item, NODE **head) {
-
-    NODE *newNode = (NODE *) malloc((sizeof(NODE)));
+    NODE *temp, *newNode;
+    newNode = (NODE *) malloc((sizeof(NODE)));
 
     if (newNode == NULL) {
         logError("Cannot insert value: %c to number buffer", item);
         return S_FALSE;
     }
-    // set values to new buffer
+    /* set values to new buffer*/
     newNode->item = item;
     newNode->next = NULL;
 
-    // setting head of buffer
+    /* setting head of buffer*/
     if (*head == NULL) {
         logDebug("Number buffer is empty creating new head");
         *head = newNode;
         return S_TRUE;
     }
 
-    // add to end of buffer
+    /* add to end of buffer*/
     logTrace("Buffer is not empty, adding new token to the end");
-    NODE *temp = *head;
+    temp = *head;
     while (temp->next != NULL) {
         temp = temp->next;
     }
@@ -38,27 +38,29 @@ int add_item(char item, NODE **head) {
 
 
 int concat(char **result, NODE **head) {
-
+    int size, counter;
+    char *tempResult;
+    NODE *temp;
     if (*head == NULL) {
         logError("Buffer is empty!!! There is nothing to concat");
         return S_FALSE;
     }
 
-    // compute items in buffer
-    int size = getSize(*head);
+    /* compute items in buffer*/
+    size = getSize(*head);
 
-    // allocate string for all items in buffer
-    char *tempResult = (char *) malloc(sizeof(char) * size + 1);
+    /* allocate string for all items in buffer*/
+    tempResult = (char *) malloc(sizeof(char) * size + 1);
 
-    // check if allocation was not successfully done
+    /* check if allocation was not successfully done*/
     if (tempResult == NULL) {
         logError("Cannot allocate buffer for creating number!!!");
         return OUT_OF_MEMORY;
     }
 
-    // iterate throw buffer and concat all items into one string
-    NODE *temp = *head;
-    int counter = 0;
+    /* iterate throw buffer and concat all items into one string*/
+    temp = *head;
+    counter = 0;
     while (temp != NULL) {
         tempResult[counter] = temp->item;
         counter++;

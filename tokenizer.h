@@ -1,6 +1,6 @@
-//
-// Created by petr on 23.01.20.
-//
+/**
+ * Created by petr on 23.01.20.
+ */
 
 #ifndef CLION_SVATAVA_TOKENIZER_H
 #define CLION_SVATAVA_TOKENIZER_H

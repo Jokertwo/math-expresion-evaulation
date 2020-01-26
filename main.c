@@ -41,21 +41,31 @@ void testStack() {
 }
 
 void testNumberBuffer() {
+    int result;
+    TOKEN *token;
     logInfo(" ------ Start testing number buffer ------ ");
-    add_number('-');
-    add_number('1');
-    add_number('.');
-    add_number('5');
 
+    result = add_number('-');
+    if (result != S_TRUE) exit(result);
 
-    TOKEN *token = createToken();
+    result = add_number('1');
+    if (result != S_TRUE) exit(result);
+
+    result = add_number('.');
+    if (result != S_TRUE) exit(result);
+
+    result = add_number('5');
+    if (result != S_TRUE) exit(result);
+
+    token = createToken();
     if (token == NULL) {
         logError("Unable memory for token");
-        exit(-1);
+        exit(OUT_OF_MEMORY);
     }
-    if (!get_number(token)) {
+    result = get_number(token);
+    if (result != S_TRUE) {
         logWarn("Some error during creating token number");
-        exit(-2);
+        exit(result);
     }
     if (!is_number_buff_empty()) {
         logError("Number buffer is not empty but should be!");
@@ -65,20 +75,28 @@ void testNumberBuffer() {
     releaseToken(&token);
 
 
-    add_number('-');
-    add_number('1');
-    add_number('.');
-    add_number('5');
+    result = add_number('-');
+    if (result != S_TRUE) exit(result);
+
+    result = add_number('1');
+    if (result != S_TRUE) exit(result);
+
+    result = add_number('.');
+    if (result != S_TRUE) exit(result);
+
+    result = add_number('5');
+    if (result != S_TRUE) exit(result);
 
 
     token = createToken();
     if (token == NULL) {
         logError("Unable memory for token");
-        exit(-1);
+        exit(OUT_OF_MEMORY);
     }
-    if (!get_number(token)) {
-        logError("Some error during creating token number");
-        exit(-2);
+    result = get_number(token);
+    if (result != S_TRUE) {
+        logWarn("Some error during creating token number");
+        exit(result);
     }
     if (!is_number_buff_empty()) {
         logError("Number buffer is not empty but should be!");
@@ -92,13 +110,14 @@ void testNumberBuffer() {
 }
 
 void testLetterBuffer() {
+    TOKEN *token;
     logInfo(" ------ Start testing letter buffer ------ ");
 
     add_letter('5');
     add_letter('a');
     add_letter('g');
 
-    TOKEN *token = createToken();
+    token = createToken();
     if (token == NULL) {
         logError("Unable memory for token");
         exit(-1);
@@ -140,8 +159,9 @@ void testLetterBuffer() {
 }
 
 void testTokenize() {
+    char *expresion;
     logInfo(" ------ Start testing tokenizer ------ ");
-    char *expresion = " 0x12          +((2*cos(x^2)/5)+5) * sin(x^(tan(x + 5E5)))   88 9 +";
+    expresion = " 0x12          +((2*cos(x^2)/5)+5) * sin(x^(tan(x + 5E5)))   88 9 +";
     tokenize_expresion(expresion);
     print_tokens();
     clear();

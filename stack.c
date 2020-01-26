@@ -16,8 +16,9 @@ typedef struct node {
 node_t *head = NULL;
 
 int push(int value) {
+    node_t *newNode;
     logDebug("Inserting to stack a new value: %d", value);
-    node_t *newNode = (node_t *) malloc(sizeof(node_t));
+    newNode = (node_t *) malloc(sizeof(node_t));
     if (newNode == NULL) {
         logError("Cannot allocate memory for new item in stack.");
         return S_FALSE;
@@ -40,6 +41,7 @@ int isEmpty() {
 
 
 int pop() {
+    int returnValue;
     node_t *temp = NULL;
 
     if(head == NULL){
@@ -47,7 +49,7 @@ int pop() {
         return S_FALSE;
     }
 
-    int returnValue = head->val;
+    returnValue = head->val;
     temp = head->next;
 
     free(head);

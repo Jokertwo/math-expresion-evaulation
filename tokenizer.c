@@ -48,18 +48,19 @@ static int create_operator(char operator);
 static int resolve_operator(char operator, TOKEN **token);
 
 int tokenize_expresion(char *expresion) {
-    int i;
+    int i, checkResult;
+    size_t len;
     logInfo("Start tokenize expresion: %s", expresion);
-    size_t len = strlen(expresion);
+    len = strlen(expresion);
 
-    //hodnota je pouziva pro detekci toho jestli se nekde behem vypoctu/tokenizace nepokazilo
-    int checkResult = S_TRUE;
+    /**hodnota je pouziva pro detekci toho jestli se nekde behem vypoctu/tokenizace nepokazilo*/
+    checkResult = S_TRUE;
 
-    // prochazim vstupnim stringem pismeno po pismenu
+    /** prochazim vstupnim stringem pismeno po pismenu*/
     for (i = 0; i < len; i++) {
         char item = expresion[i];
 
-        // pokud na narazim na jeden z techto znaku, znamena to zmenu stavu (napr precetl jsem vsechny cisla ktera k sobe patri
+        /** pokud na narazim na jeden z techto znaku, znamena to zmenu stavu (napr precetl jsem vsechny cisla ktera k sobe patri*/
         if (item == '(' || item == ')' || item == '*' || item == '+' || item == '/' || item == '^' || isspace(item) ||
             item == '-') {
 
@@ -151,7 +152,8 @@ void clear() {
 
 
 static int add_token(TOKEN *token) {
-    TOKEN_LIST *newNode = (TOKEN_LIST *) malloc((sizeof(TOKEN_LIST)));
+    TOKEN_LIST *temp, *newNode;
+    newNode = (TOKEN_LIST *) malloc((sizeof(TOKEN_LIST)));
     if (newNode == NULL) {
         logError("Unable to allocate memory for new TOKEN_LIST node");
         return OUT_OF_MEMORY;
@@ -164,7 +166,7 @@ static int add_token(TOKEN *token) {
         head_list = newNode;
         return S_TRUE;
     }
-    TOKEN_LIST *temp = head_list;
+    temp = head_list;
     while (temp->next != NULL) {
         temp = temp->next;
     }
@@ -175,13 +177,15 @@ static int add_token(TOKEN *token) {
 }
 
 static int create_number() {
-    TOKEN *token = (TOKEN *) malloc(sizeof(TOKEN));
+    int result;
+    TOKEN *token;
+    token = (TOKEN *) malloc(sizeof(TOKEN));
     if (token == NULL) {
         logError("Cannot create new token for stored a new number");
         return OUT_OF_MEMORY;
     }
     token->function = NULL;
-    int result = get_number(token);
+    result = get_number(token);
     if (result != S_TRUE) {
         return result;
     }
@@ -189,15 +193,17 @@ static int create_number() {
 }
 
 static int create_string() {
-    TOKEN *token = (TOKEN *) malloc(sizeof(TOKEN));
+    int result;
+    TOKEN *token;
+    token = (TOKEN *) malloc(sizeof(TOKEN));
     if (token == NULL) {
         logError("Cannot create new token for stored a new function/variable");
         return OUT_OF_MEMORY;
     }
     token->function = NULL;
 
-    //concat all letters together
-    int result = get_letter(token);
+    /*concat all letters together*/
+    result = get_letter(token);
     if (result != S_TRUE) {
         logError("Can not create new token from string");
         return result;
@@ -206,26 +212,28 @@ static int create_string() {
 }
 
 static int create_operator(char operator) {
-    TOKEN *token = (TOKEN *) malloc(sizeof(TOKEN));
+    int returnValue;
+    TOKEN *token;
+    token = (TOKEN *) malloc(sizeof(TOKEN));
     if (token == NULL) {
         logError("Cannot create new token for stored a new function");
         return OUT_OF_MEMORY;
     }
     token->function = NULL;
 
-    //resolve operator
-    int returnValue = resolve_operator(operator, &token);
+    /*resolve operator*/
+    returnValue = resolve_operator(operator, &token);
     if (returnValue != S_TRUE) {
         logError("Unknown operator %c, returning error code: %d", operator, returnValue);
         return returnValue;
     }
 
-    //adding operator to token
+    /*adding operator to token*/
     token->other = operator;
 
     logInfo("Created new token, type: %d, other: %c", token->type, token->other);
 
-    //adding token to token list
+    /*adding token to token list*/
     return add_token(token);
 }
 
