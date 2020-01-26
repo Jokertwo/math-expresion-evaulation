@@ -140,7 +140,7 @@ void testLetterBuffer() {
 }
 
 void testTokenize() {
-    char *expresion = " 5e3+((2*cos(x^2)/5)+5) * sin(x^(tan(x + 5E5)))";
+    char *expresion = " 0x12          +((2*cos(x^2)/5)+5) * sin(x^(tan(x + 5E5)))   88 9 +";
     tokenize_expresion(expresion);
     print_tokens();
     clear();
@@ -150,19 +150,12 @@ int main(int argc, char *argv[]) {
     setLogLevel(DEBUG);
     logInfo("Starting app");
 
-    logInfo("%s", argv[1]);
-    logInfo("%d", strlen(argv[1]));
-
-    size_t len = strlen(argv[1]);
-    int i;
-    for (i = 0; i < len; i++) {
-        //  logInfo("%c",argv[1][i]);
-    }
     //testStack();
     //testLetterBuffer();
     //testNumberBuffer();
     testTokenize();
-
+    int a = 0x12;
+    logInfo("%d", a);
 
     logInfo("Exiting app");
 

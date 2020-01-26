@@ -12,55 +12,55 @@
 
 static TOKEN_LIST *head_list;
 
-typedef enum {
-    NUMBER_STATE,
-    LETTER_STATE
-} STATE;
-
 static TOKEN *create_token();
 
 static int add_token(TOKEN *token);
 
+/**
+ * Create number from content of number_buffer
+ *
+ * @return
+ */
+static int create_number();
+
+/**
+ * Create string form content of letter_buffer
+ *
+ * @return
+ */
+static int create_string();
+
+/**
+ * Create new operator token and store it in list
+ */
+static void create_operator(char operator);
+
 
 int tokenize_expresion(char *expresion) {
     int i;
-    char lastItem = 0;
+
     size_t len = strlen(expresion);
 
-    STATE status = NUMBER_STATE;
 
     for (i = 0; i < len; i++) {
         char item = expresion[i];
-        TOKEN *token;
-        //skip space
-        if (isspace(item)) {
-            continue;
-        }
 
-        if (item == '(' || item == ')' || item == '*' || item == '+' || item == '/' || item == '^') {
+        if (item == '(' || item == ')' || item == '*' || item == '+' || item == '/' || item == '^' || isspace(item) ||
+            item == '-') {
             if (!is_letter_buff_empty()) {
-                token = create_token();
-                get_letter(token);
-                add_token(token);
+                create_string();
             }
             if (!is_number_buff_empty()) {
-                token = create_token();
-                get_number(token);
-                add_token(token);
+                if (expresion[i - 1] == 'e' || expresion[i - 1] == 'E') {
+                    add_number(item);
+                    continue;
+                } else {
+                    create_number();
+                }
             }
-
-            token = create_token();
-            token->type = operator_t;
-            token->operator = (char *) malloc(sizeof(char) * 4);
-            if (token->operator == NULL) {
-                logError("Unable to allocate memory for new operator");
-                return S_FALSE;
+            if (!isspace(item)) {
+                create_operator(item);
             }
-
-            strcpy(token->operator, &item);
-            token->operator[1] = '\0';
-
-            add_token(token);
         } else if (isdigit(item) || item == '.') {
             add_number(item);
         } else if (isalpha(item)) {
@@ -70,18 +70,13 @@ int tokenize_expresion(char *expresion) {
                 add_letter(item);
             }
         }
-        lastItem = item;
     }
-    TOKEN *token;
-    if (!is_letter_buff_empty()) {
-        token = create_token();
-        get_letter(token);
-        add_token(token);
+
+    if (!is_number_buff_empty()) {
+        create_number();
     }
     if (!is_letter_buff_empty()) {
-        token = create_token();
-        get_number(token);
-        add_token(token);
+        create_string();
     }
 
     return S_TRUE;
@@ -140,4 +135,33 @@ static int add_token(TOKEN *token) {
 
     return S_TRUE;
 
+}
+
+static int create_number() {
+    TOKEN *token = create_token();
+    get_number(token);
+    add_token(token);
+    return S_TRUE;
+}
+
+static int create_string() {
+    TOKEN *token = create_token();
+    get_letter(token);
+    add_token(token);
+    return S_TRUE;
+}
+
+static void create_operator(char operator) {
+    TOKEN *token = create_token();
+    token->type = operator_t;
+    token->operator = (char *) malloc(sizeof(char) * 4);
+    if (token->operator == NULL) {
+        logError("Unable to allocate memory for new operator");
+        exit(-100);
+    }
+
+    strcpy(token->operator, &operator);
+    token->operator[1] = '\0';
+
+    add_token(token);
 }
