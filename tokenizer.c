@@ -40,9 +40,12 @@ static int create_operator(char operator, TOKEN_LIST **head);
  */
 static int resolve_operator(char operator, TOKEN **token);
 
+
 int tokenize_expresion(char *expresion, TOKEN_LIST **head) {
     int i, checkResult;
     size_t len;
+    int use_plus;
+    use_plus = S_FALSE;
     logInfo("Start tokenize expresion: %s", expresion);
     len = strlen(expresion);
 
@@ -60,9 +63,10 @@ int tokenize_expresion(char *expresion, TOKEN_LIST **head) {
             /**  pokud jsem do ted cetl pismena vztvorim z nich jedno slovo */
             if (!is_letter_buff_empty()) {
                 checkResult = create_string(head);
+                use_plus = S_TRUE;
             }
-            /** pokud jsem do ted cetl cisla*/
-            if (!is_number_buff_empty()) {
+                /** pokud jsem do ted cetl cisla*/
+            else if (!is_number_buff_empty()) {
                 /**
                  * je-li prechzejici znak 'e/E' => vedecka notace, pridej aktulni znak ho ciselneho bufferu
                  * patri sem jak 5E5 tak 5E-5
@@ -76,11 +80,26 @@ int tokenize_expresion(char *expresion, TOKEN_LIST **head) {
                 } else {
                     /** ve vsech ostatnich pripadech vytvor cislo z toho co je v bufferu*/
                     checkResult = create_number(head);
+                    use_plus = S_TRUE;
                 }
             }
+
             /** nakonec je treba zpracovat aktulni znak, mezery se neukladaji protoze je az ted k nicemu nepotrebuju*/
             if (!isspace(item)) {
-                checkResult = create_operator(item, head);
+                if (item == '-') {
+                    if (use_plus) {
+                        create_operator('+', head);
+                        use_plus = S_FALSE;
+                    }
+                    add_number('-');
+                    add_number('1');
+                    create_number(head);
+                    create_operator('*', head);
+                } else {
+                    use_plus = item == ')' ? S_TRUE : S_FALSE;
+                    checkResult = create_operator(item, head);
+                }
+
             }
             /** pokud je znak cislo nebo desetina tecka pridej to do ciselneho bufferu*/
         } else if (isdigit(item) || item == '.') {

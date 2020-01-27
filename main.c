@@ -163,7 +163,7 @@ void testTokenize() {
     char *expresion;
     TOKEN_LIST *head = NULL;
     logInfo(" ------ Start testing tokenizer ------ ");
-    expresion = " 0x12          +((2*cos(x^2)/5)+5) * sin(x^(tan(x + 5E5)))   88 9 +";
+    expresion = " -(3+-6)-5*-cos(2^-5)";
     tokenize_expresion(expresion, &head);
     print_tokens(head);
     clear(&head);

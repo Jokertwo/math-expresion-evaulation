@@ -14,10 +14,9 @@ const int S_FALSE;
 typedef enum {
     number_t,
     variable_t,
-    function_t,
     left_parenthesis_t,
     right_parenthesis_t,
-    operator_t,
+    function_t,
     plus_op,
     minus_op,
     pow_op,
