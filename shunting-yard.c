@@ -1,6 +1,6 @@
-//
-// Created by petr on 26.01.20.
-//
+/**
+ * Created by petr on 26.01.20.
+ */
 
 #include "shunting-yard.h"
 #include "constants.h"

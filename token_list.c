@@ -78,3 +78,27 @@ void clear(TOKEN_LIST **head) {
         (*head) = temp;
     }
 }
+
+int create_new_token(TOKEN **token) {
+    *token = (TOKEN *) malloc(sizeof(TOKEN));
+    if (*token == NULL) {
+        logError("Can not create new token!!!");
+        return OUT_OF_MEMORY;
+    }
+    (*token)->number = 0;
+    (*token)->type = -1;
+    (*token)->function = NULL;
+    (*token)->other = '\0';
+    return S_TRUE;
+}
+
+int create_new_token_list(TOKEN_LIST **list) {
+    *list = (TOKEN_LIST *) malloc(sizeof(TOKEN_LIST));
+    if (*list == NULL) {
+        logError("Can not create new token list node!!!");
+        return OUT_OF_MEMORY;
+    }
+    (*list)->value = NULL;
+    (*list)->next = NULL;
+    return S_TRUE;
+}

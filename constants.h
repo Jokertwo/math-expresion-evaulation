@@ -5,7 +5,8 @@
 
 
 #define UNKNOWN_OPERATOR -100
-#define OUT_OF_MEMORY 50
+#define BAD_SYNTAX -75
+#define OUT_OF_MEMORY -50
 
 const int S_TRUE;
 const int S_FALSE;
@@ -14,9 +15,9 @@ const int S_FALSE;
 typedef enum {
     number_t,
     variable_t,
+    function_t,
     left_parenthesis_t,
     right_parenthesis_t,
-    function_t,
     plus_op,
     minus_op,
     pow_op,

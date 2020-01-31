@@ -41,11 +41,82 @@ static int create_operator(char operator, TOKEN_LIST **head);
 static int resolve_operator(char operator, TOKEN **token);
 
 
+int resolveUnary(TOKEN_LIST **head) {
+    int returnValue;
+    TOKEN_LIST *current = NULL, *previous = NULL, *list = NULL;
+    TOKEN *temp = NULL;
+    current = *head;
+    returnValue = S_TRUE;
+
+    while (current->next != NULL) {
+        if (previous == NULL && current->value->type == minus_op) {
+            current->value->type = number_t;
+            current->value->number = -1;
+
+            returnValue = create_new_token_list(&list);
+            if (returnValue != S_TRUE) {
+                logError("Cannot create new list node for negative number!!!");
+                return returnValue;
+            }
+
+            returnValue = create_new_token(&temp);
+            if (returnValue != S_TRUE) {
+                logError("Cannot create new token for stored a new negative number");
+                return returnValue;
+            }
+
+            temp->type = multi_op;
+            temp->other = '*';
+            list->value = temp;
+            list->next = current->next;
+            current->next = list;
+
+        } else if (previous != NULL && current->value->type == minus_op &&
+                   (previous->value->type > right_parenthesis_t || previous->value->type == left_parenthesis_t)) {
+            if (current->next == NULL || current->next->value->type > left_parenthesis_t) {
+                logError("Bad syntax: too much operators");
+                return BAD_SYNTAX;
+            }
+            if (current->next->value->type == number_t) {
+                current->next->value->number = -current->next->value->number;
+                previous->next = current->next;
+                free(current->value);
+                free(current);
+                current = previous;
+            } else if (current->next->value->type == left_parenthesis_t || current->next->value->type == function_t ||
+                       current->next->value->type == variable_t) {
+                current->value->type = number_t;
+                current->value->number = -1;
+
+                returnValue = create_new_token_list(&list);
+                if (returnValue != S_TRUE) {
+                    logError("Cannot create new list node for negative number!!!");
+                    return returnValue;
+                }
+
+                returnValue = create_new_token(&temp);
+                if (returnValue != S_TRUE) {
+                    logError("Cannot create new token for stored a new number");
+                    return returnValue;
+                }
+
+                temp->type = multi_op;
+                temp->other = '*';
+                list->value = temp;
+                list->next = current->next;
+                current->next = list;
+            }
+        }
+        previous = current;
+        current = current->next;
+    }
+    return returnValue;
+}
+
+
 int tokenize_expresion(char *expresion, TOKEN_LIST **head) {
     int i, checkResult;
     size_t len;
-    int use_plus;
-    use_plus = S_FALSE;
     logInfo("Start tokenize expresion: %s", expresion);
     len = strlen(expresion);
 
@@ -63,7 +134,6 @@ int tokenize_expresion(char *expresion, TOKEN_LIST **head) {
             /**  pokud jsem do ted cetl pismena vztvorim z nich jedno slovo */
             if (!is_letter_buff_empty()) {
                 checkResult = create_string(head);
-                use_plus = S_TRUE;
             }
                 /** pokud jsem do ted cetl cisla*/
             else if (!is_number_buff_empty()) {
@@ -80,26 +150,13 @@ int tokenize_expresion(char *expresion, TOKEN_LIST **head) {
                 } else {
                     /** ve vsech ostatnich pripadech vytvor cislo z toho co je v bufferu*/
                     checkResult = create_number(head);
-                    use_plus = S_TRUE;
+
                 }
             }
 
             /** nakonec je treba zpracovat aktulni znak, mezery se neukladaji protoze je az ted k nicemu nepotrebuju*/
             if (!isspace(item)) {
-                if (item == '-') {
-                    if (use_plus) {
-                        create_operator('+', head);
-                        use_plus = S_FALSE;
-                    }
-                    add_number('-');
-                    add_number('1');
-                    create_number(head);
-                    create_operator('*', head);
-                } else {
-                    use_plus = item == ')' ? S_TRUE : S_FALSE;
-                    checkResult = create_operator(item, head);
-                }
-
+                checkResult = create_operator(item, head);
             }
             /** pokud je znak cislo nebo desetina tecka pridej to do ciselneho bufferu*/
         } else if (isdigit(item) || item == '.') {
@@ -138,12 +195,12 @@ int tokenize_expresion(char *expresion, TOKEN_LIST **head) {
 static int create_number(TOKEN_LIST **head) {
     int result;
     TOKEN *token;
-    token = (TOKEN *) malloc(sizeof(TOKEN));
-    if (token == NULL) {
-        logError("Cannot create new token for stored a new number");
-        return OUT_OF_MEMORY;
+    result = create_new_token(&token);
+    if (result != S_TRUE) {
+        logError("Cannot create new token for number!!!");
+        return result;
     }
-    token->function = NULL;
+    /* concat all digits in buffer together*/
     result = get_number(token);
     if (result != S_TRUE) {
         return result;
@@ -154,13 +211,11 @@ static int create_number(TOKEN_LIST **head) {
 static int create_string(TOKEN_LIST **head) {
     int result;
     TOKEN *token;
-    token = (TOKEN *) malloc(sizeof(TOKEN));
-    if (token == NULL) {
-        logError("Cannot create new token for stored a new function/variable");
-        return OUT_OF_MEMORY;
+    result = create_new_token(&token);
+    if (result != S_TRUE) {
+        logError("Cannot create new token for string!!!");
+        return result;
     }
-    token->function = NULL;
-
     /*concat all letters together*/
     result = get_letter(token);
     if (result != S_TRUE) {
@@ -173,12 +228,12 @@ static int create_string(TOKEN_LIST **head) {
 static int create_operator(char operator, TOKEN_LIST **head) {
     int returnValue;
     TOKEN *token;
-    token = (TOKEN *) malloc(sizeof(TOKEN));
-    if (token == NULL) {
-        logError("Cannot create new token for stored a new function");
-        return OUT_OF_MEMORY;
+
+    returnValue = create_new_token(&token);
+    if (returnValue != S_TRUE) {
+        logError("Cannot create new token for operator!!!");
+        return returnValue;
     }
-    token->function = NULL;
 
     /*resolve operator*/
     returnValue = resolve_operator(operator, &token);
@@ -225,3 +280,5 @@ static int resolve_operator(char operator, TOKEN **token) {
     }
     return returnValue;
 }
+
+

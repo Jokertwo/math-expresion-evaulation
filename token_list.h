@@ -42,4 +42,19 @@ void clear(TOKEN_LIST **head);
  */
 void print_tokens(TOKEN_LIST *head);
 
+
+/**
+ * Allocate memory and create new epmpty token
+ * @param token
+ * @return return S_TRUE if token was successfully created else OUT_OF_MEMORY when can not be created new token
+ */
+int create_new_token(TOKEN **token);
+
+/**
+ * Create new token list node
+ * @param list
+ * @return return S_TRUE if node was successfully created else OUT_OF_MEMORY when can not be created new node
+ */
+int create_new_token_list(TOKEN_LIST **list);
+
 #endif

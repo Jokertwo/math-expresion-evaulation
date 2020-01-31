@@ -163,10 +163,12 @@ void testTokenize() {
     char *expresion;
     TOKEN_LIST *head = NULL;
     logInfo(" ------ Start testing tokenizer ------ ");
-    expresion = " -(3+-6)-5*-cos(2^-5)";
+    expresion = "-  4 * (- 4 + -5 * -sin(2^-5))";
     tokenize_expresion(expresion, &head);
+    resolveUnary(&head);
     print_tokens(head);
     clear(&head);
+
     logInfo(" ------ End testing tokenizer ------ ");
 }
 
