@@ -50,27 +50,36 @@ int resolveUnary(TOKEN_LIST **head) {
 
     while (current->next != NULL) {
         if (previous == NULL && current->value->type == minus_op) {
-            current->value->type = number_t;
-            current->value->number = -1;
+            if (current->next->value->type == number_t) {
+                current->value->number = -current->next->value->number;
+                current->value->type = number_t;
+                list = current->next;
+                current->next = current->next->next;
+                free(list->value);
+                free(list);
 
-            returnValue = create_new_token_list(&list);
-            if (returnValue != S_TRUE) {
-                logError("Cannot create new list node for negative number!!!");
-                return returnValue;
+            } else {
+                current->value->type = number_t;
+                current->value->number = -1;
+
+                returnValue = create_new_token_list(&list);
+                if (returnValue != S_TRUE) {
+                    logError("Cannot create new list node for negative number!!!");
+                    return returnValue;
+                }
+
+                returnValue = create_new_token(&temp);
+                if (returnValue != S_TRUE) {
+                    logError("Cannot create new token for stored a new negative number");
+                    return returnValue;
+                }
+
+                temp->type = multi_op;
+                temp->other = '*';
+                list->value = temp;
+                list->next = current->next;
+                current->next = list;
             }
-
-            returnValue = create_new_token(&temp);
-            if (returnValue != S_TRUE) {
-                logError("Cannot create new token for stored a new negative number");
-                return returnValue;
-            }
-
-            temp->type = multi_op;
-            temp->other = '*';
-            list->value = temp;
-            list->next = current->next;
-            current->next = list;
-
         } else if (previous != NULL && current->value->type == minus_op &&
                    (previous->value->type > right_parenthesis_t || previous->value->type == left_parenthesis_t)) {
             if (current->next == NULL || current->next->value->type > left_parenthesis_t) {
