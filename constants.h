@@ -18,15 +18,26 @@ typedef enum {
     function_t,
     left_parenthesis_t,
     right_parenthesis_t,
-    plus_op,
-    minus_op,
-    pow_op,
-    divide_op,
-    multi_op
+    operator_t
 } TYPE;
+
+typedef enum {
+    add_op,
+    sub_op,
+    mul_op,
+    div_op,
+    pow_op,
+    other
+} OPERATOR_TYPE;
+
+typedef enum {
+    left,
+    right
+} ASSOC;
 
 typedef struct token {
     TYPE type;
+    OPERATOR_TYPE operator_type;
     double number;
     char *function;
     char other;

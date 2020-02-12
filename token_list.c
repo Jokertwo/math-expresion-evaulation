@@ -38,11 +38,11 @@ int add_to_end(TOKEN *token, TOKEN_LIST **head) {
     newNode->value = token;
     newNode->next = NULL;
 
-    if (*head == NULL) {
-        *head = newNode;
+    if ((*head) == NULL) {
+        (*head) = newNode;
         return S_TRUE;
     }
-    temp = *head;
+    temp = (*head);
     while (temp->next != NULL) {
         temp = temp->next;
     }
@@ -51,6 +51,23 @@ int add_to_end(TOKEN *token, TOKEN_LIST **head) {
     return S_TRUE;
 }
 
+int pop_token(TOKEN **token, TOKEN_LIST **head) {
+    TOKEN_LIST *temp;
+    if ((*head) == NULL) {
+        logError("Empty head!!!");
+        return S_FALSE;
+    }
+    (*token) = (*head)->value;
+    temp = (*head)->next;
+    free((*head));
+    (*head) = temp;
+
+    return S_TRUE;
+}
+
+int is_empty(TOKEN_LIST *list) {
+    return list == NULL || list->value == NULL;
+}
 
 void print_tokens(TOKEN_LIST *head) {
     TOKEN_LIST *temp = head;

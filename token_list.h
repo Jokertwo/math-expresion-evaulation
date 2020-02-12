@@ -28,7 +28,7 @@ int add_to_end(TOKEN *token, TOKEN_LIST **head);
  * @param token
  * @return return S_TRUE if everything was ok else some error code
  */
-int pop_token(TOKEN *token);
+int pop_token(TOKEN **token, TOKEN_LIST **head);
 
 /**
  * Clear token list
@@ -42,6 +42,7 @@ void clear(TOKEN_LIST **head);
  */
 void print_tokens(TOKEN_LIST *head);
 
+int is_empty(TOKEN_LIST *head);
 
 /**
  * Allocate memory and create new epmpty token

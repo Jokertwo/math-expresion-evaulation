@@ -49,7 +49,7 @@ int resolveUnary(TOKEN_LIST **head) {
     returnValue = S_TRUE;
 
     while (current->next != NULL) {
-        if (previous == NULL && current->value->type == minus_op) {
+        if (previous == NULL && current->value->type == operator_t && current->value->other == '-') {
             if (current->next->value->type == number_t) {
                 current->value->number = -current->next->value->number;
                 current->value->type = number_t;
@@ -74,18 +74,14 @@ int resolveUnary(TOKEN_LIST **head) {
                     return returnValue;
                 }
 
-                temp->type = multi_op;
+                temp->type = operator_t;
                 temp->other = '*';
                 list->value = temp;
                 list->next = current->next;
                 current->next = list;
             }
-        } else if (previous != NULL && current->value->type == minus_op &&
-                   (previous->value->type > right_parenthesis_t || previous->value->type == left_parenthesis_t)) {
-            if (current->next == NULL || current->next->value->type > left_parenthesis_t) {
-                logError("Bad syntax: too much operators");
-                return BAD_SYNTAX;
-            }
+        } else if (previous != NULL && current->value->type == operator_t && current->value->other == '-' &&
+                   (previous->value->type == operator_t || previous->value->type == left_parenthesis_t)) {
             if (current->next->value->type == number_t) {
                 current->next->value->number = -current->next->value->number;
                 previous->next = current->next;
@@ -109,7 +105,7 @@ int resolveUnary(TOKEN_LIST **head) {
                     return returnValue;
                 }
 
-                temp->type = multi_op;
+                temp->type = operator_t;
                 temp->other = '*';
                 list->value = temp;
                 list->next = current->next;
@@ -240,18 +236,18 @@ static int create_operator(char operator, TOKEN_LIST **head) {
 
     returnValue = create_new_token(&token);
     if (returnValue != S_TRUE) {
-        logError("Cannot create new token for operator!!!");
+        logError("Cannot create new token for operator_t!!!");
         return returnValue;
     }
 
-    /*resolve operator*/
+    /*resolve operator_t*/
     returnValue = resolve_operator(operator, &token);
     if (returnValue != S_TRUE) {
-        logError("Unknown operator %c, returning error code: %d", operator, returnValue);
+        logError("Unknown operator_t %c, returning error code: %d", operator, returnValue);
         return returnValue;
     }
 
-    /*adding operator to token*/
+    /*adding operator_t to token*/
     token->other = operator;
 
     logInfo("Created new token, type: %d, other: %c", token->type, token->other);
@@ -265,24 +261,31 @@ static int resolve_operator(char operator, TOKEN **token) {
     switch (operator) {
         case ')':
             (*token)->type = right_parenthesis_t;
+            (*token)->operator_type = other;
             break;
         case '(':
             (*token)->type = left_parenthesis_t;
+            (*token)->operator_type = other;
             break;
         case '+':
-            (*token)->type = plus_op;
+            (*token)->type = operator_t;
+            (*token)->operator_type = add_op;
             break;
         case '-':
-            (*token)->type = minus_op;
+            (*token)->type = operator_t;
+            (*token)->operator_type = sub_op;
             break;
         case '/':
-            (*token)->type = divide_op;
+            (*token)->type = operator_t;
+            (*token)->operator_type = div_op;
             break;
         case '^':
-            (*token)->type = pow_op;
+            (*token)->type = operator_t;
+            (*token)->operator_type = pow_op;
             break;
         case '*':
-            (*token)->type = multi_op;
+            (*token)->type = operator_t;
+            (*token)->operator_type = mul_op;
             break;
         default:
             returnValue = UNKNOWN_OPERATOR;

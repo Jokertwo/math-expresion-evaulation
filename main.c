@@ -7,6 +7,7 @@
 #include "letter_buffer.h"
 #include "tokenizer.h"
 #include "token_list.h"
+#include "shunting-yard.h"
 
 static TOKEN *createToken();
 
@@ -162,13 +163,22 @@ void testLetterBuffer() {
 void testTokenize() {
     char *expresion;
     TOKEN_LIST *head = NULL;
+    TOKEN_LIST *output = NULL;
     logInfo(" ------ Start testing tokenizer ------ ");
-    expresion = "-  4 * (- 4 + -5 * -sin(2^-5))";
+    expresion = "3*(-4 + 5) + sin(5)";
     tokenize_expresion(expresion, &head);
     resolveUnary(&head);
+    logInfo(" ------ After tokenize ------ ");
     print_tokens(head);
+    shunting_yard(head, &output);
+    logInfo("------ After shunting yard ------");
+    print_tokens(output);
     clear(&head);
-
+    while (output != NULL) {
+        TOKEN_LIST *temp = output->next;
+        free(output);
+        output = temp;
+    }
     logInfo(" ------ End testing tokenizer ------ ");
 }
 
